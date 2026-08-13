@@ -3,6 +3,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import dotenv from "dotenv"
 import connectDB from "./config/db.js"
+import authRoutes from "./routes/auth.routes.js"
 
 dotenv.config()
 
@@ -22,6 +23,8 @@ app.use(cookieParser())
 app.get('/', (req,res) => {
   res.json({message: "API is running"})
 })
+
+app.use('/api/auth', authRoutes)
 
 const PORT = process.env.PORT || 5000
 

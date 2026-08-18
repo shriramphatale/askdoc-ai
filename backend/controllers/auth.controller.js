@@ -1,6 +1,7 @@
 import {User} from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../utils/generateToken.js';
+import { ENV } from '../config/env.js';
 
 const signup = async (req, res) => {
     try {
@@ -80,7 +81,7 @@ const login = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    res.cookie('token', '', { maxAge: 0, httpOnly: true, sameSite: 'strict', secure: process.env.NODE_ENV === 'production' });
+    res.cookie('token', '', { maxAge: 0, httpOnly: true, sameSite: 'strict', secure: ENV.NODE_ENV === 'production' });
     res.status(200).json({message: 'Logged out successfully'});
 }
 

@@ -1,25 +1,33 @@
+import {useDocumentStore} from "../../store/useDocumentStore";
 import { useRef } from "react";
 
-const UploadDocument = (onUpload) => {
+
+const UploadDocument = () => {
     const fileInputRef = useRef(null);
+
+    const { uploadDocument, isUploading } = useDocumentStore();
 
     const handleUploadClick = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
-        if (onUpload) {
-            onUpload();
-        }
     };
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
-        if (file && onUpload) {
-            onUpload(file);
+        if (file) {
+            uploadDocument(file);
         }
     };
   return (
     <div className="px-3 pb-3 shrink-0">
+        {isUploading && (
+    <div className="fixed inset-0 z-50 pointer-events-none">
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-zinc-800 overflow-hidden">
+            <div className="h-full w-1/3 bg-zinc-200 animate-[progress_1.2s_ease-in-out_infinite]" />
+        </div>
+    </div>
+)}
         <input
             type="file"
             ref={fileInputRef}

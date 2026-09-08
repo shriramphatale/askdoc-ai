@@ -1,7 +1,9 @@
 import {useState} from "react"
+import {useAuthStore} from "../../store/useAuthStore"
 
 const UserProfile = () => {
     const [avatarError, setAvatarError] = useState(false);
+    const {authUser} = useAuthStore()
   return (
     <div className="p-3 mt-auto shrink-0">
         <div className="flex items-center gap-3 p-2 rounded-xl bg-zinc-900/60 hover:bg-zinc-800/60 border border-zinc-800/50 transition-all cursor-pointer group select-none">
@@ -24,10 +26,10 @@ const UserProfile = () => {
             {/* Profile Info */}
             <div className="flex flex-col min-w-0 text-left">
                 <span className="text-sm font-medium text-zinc-100 truncate group-hover:text-white leading-tight">
-                Shriram Phatale
+                    {authUser?.fullName}
                 </span>
                 <span className="text-xs text-zinc-400 truncate leading-tight mt-0.5">
-                demo@gmail.com
+                    {authUser?.email}
                 </span>
             </div>
 

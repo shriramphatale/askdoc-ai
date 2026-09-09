@@ -1,7 +1,9 @@
 import {useDocumentStore} from "../../store/useDocumentStore";
+import {useUIStore} from "../../store/useUIStore";
 
 const SidebarToggle = () => {
   const {isSidebarOpen, toggleSidebar} = useDocumentStore();
+  const {isUserMenuOpen} = useUIStore()
   return (
     <>
     {/* Mobile Backdrop Overlay - only active when sidebar is open on mobile */}
@@ -21,7 +23,7 @@ const SidebarToggle = () => {
         title={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
         className={`fixed top-3.5 z-50 flex items-center justify-center w-8 h-8 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/80 active:bg-zinc-800 border border-transparent hover:border-zinc-700/40 transition-all duration-300 ease-in-out cursor-pointer focus:outline-none focus-visible:ring-1 focus-visible:ring-zinc-600 ${
           isSidebarOpen ? "left-[268px]" : "left-4"
-        }`}
+        } ${ isUserMenuOpen ? "pointer-events-none" : "pointer-events-auto" }`}
       >
         <svg
           className="w-4.5 h-4.5"

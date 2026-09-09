@@ -1,12 +1,15 @@
 import {useState} from "react"
 import {useAuthStore} from "../../store/useAuthStore"
+import {useUIStore} from "../../store/useUIStore"
 
 const UserProfile = () => {
     const [avatarError, setAvatarError] = useState(false);
     const {authUser} = useAuthStore()
+    const {toggleUserMenu} = useUIStore()
+
   return (
     <div className="p-3 mt-auto shrink-0">
-        <div className="flex items-center gap-3 p-2 rounded-xl bg-zinc-900/60 hover:bg-zinc-800/60 border border-zinc-800/50 transition-all cursor-pointer group select-none">
+        <div onClick={toggleUserMenu} className="flex items-center gap-3 p-2 rounded-xl bg-zinc-900/60 hover:bg-zinc-800/60 border border-zinc-800/50 transition-all cursor-pointer group select-none">
             {/* Circular Avatar */}
             <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 bg-zinc-800 border border-zinc-700/60 flex items-center justify-center">
                 {!avatarError ? (

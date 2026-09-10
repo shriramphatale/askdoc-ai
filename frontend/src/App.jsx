@@ -1,4 +1,5 @@
 import {Routes, Route, Navigate} from 'react-router'
+import {Toaster} from "react-hot-toast"
 import {useAuthStore} from "./store/useAuthStore"
 import {useDocumentStore} from "./store/useDocumentStore"
 import {useEffect} from "react"
@@ -46,6 +47,8 @@ const App = () => {
         <Route path="/signup" element={!authUser ? <Signup /> : <Navigate to={"/chat"} replace />} />
         <Route path="/login" element={!authUser ? <Login /> : <Navigate to={"/chat"} replace />} />
       </Routes>
+      <Toaster toastOptions={{style: {background: "#18181b", color: "#f4f4f5", border: "1px solid #27272a", 
+        borderRadius: "9999px", padding: "10px 18px", fontSize: "14px", boxShadow: "0 8px 30px rgba(0, 0, 0, 0.35)",}}}/>
     </div>
   )
 }

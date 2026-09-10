@@ -1,5 +1,6 @@
 import {create} from 'zustand'
 import {axiosInstance} from '../lib/axios'
+import toast from "react-hot-toast"
 
 export const useDocumentStore = create((set) => ({
     documents: [],
@@ -23,10 +24,10 @@ export const useDocumentStore = create((set) => ({
             formData.append('file', file);
 
             const response = await axiosInstance.post('/documents/', formData)
-            console.log(response)
             set((state) => ({ documents: [...state.documents, response.data.document], selectedDocument: response.data.document }));
+            toast.success("Document uploaded successfully");
         } catch (error) {
-            console.log( error.response?.data?.message || error.message)
+            toast.error( error.response?.data?.message || "Failed to upload document")
         } finally {
             set({ isUploading: false });
         }
@@ -64,8 +65,9 @@ export const useDocumentStore = create((set) => ({
                 documents: state.documents.filter((doc) => doc._id !== id),
                 selectedDocument: state.selectedDocument?._id === id ? null : state.selectedDocument,
             }));
+            toast.success("Document deleted successfully");
         } catch (error) {
-            console.log(error.response?.data?.message || error.message);
+            toast.error(error.response?.data?.message || "Failed to delete document");
         } finally {
             set({ isDeleting: false });
         }

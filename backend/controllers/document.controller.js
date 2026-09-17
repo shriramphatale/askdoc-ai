@@ -1,4 +1,5 @@
 import { Document } from '../models/document.model.js';
+import { Conversation } from '../models/conversation.model.js'
 import cloudinary from '../config/cloudinary.js';
 import { PDFDocument } from 'pdf-lib';
 import fs from "fs";
@@ -32,7 +33,9 @@ const uploadDocument = async (req, res) => {
 
         const savedDocument = await document.save();
 
-        res.status(201).json({ message: 'Document uploaded successfully', document: savedDocument });
+        const conversation = await Conversation.create({ userId: req.user._id, documentId: document._id })
+
+        res.status(201).json({ message: 'Document uploaded successfully', document: savedDocument, conversation });
     } catch (error) {
         res.status(500).json({ message: 'Error uploading document', error: error.message });
     }

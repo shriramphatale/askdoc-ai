@@ -15,6 +15,12 @@ export const useChatStore = create((set, get) => ({
         set({conversationId});
     },
 
+    clearMessages: () => {
+        set({
+            messages: [],
+        });
+    },
+
     sendMessage: async (documentId, question) => {
         if(!question.trim()) return;
         const {conversationId} = get()

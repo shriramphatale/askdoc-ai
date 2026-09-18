@@ -29,6 +29,10 @@ export const useDocumentStore = create((set) => ({
             formData.append('file', file);
 
             const response = await axiosInstance.post('/documents/', formData)
+            
+            // Clear messages from previous conversation
+            useChatStore.getState().clearMessages();
+
             useChatStore.getState().setConversationId(response.data.conversation._id)
             set((state) => ({ 
                 documents: [...state.documents, response.data.document], 

@@ -7,8 +7,9 @@ const router = express.Router()
 router.use(authMiddleware)
 
 router.post("/:conversationId", askQuestion);
+router.get("/recents", getRecentChats)
 router.get("/:conversationId", getMessages);
 router.delete("/:conversationId", deleteConversation);
-router.get("/recents", getRecentChats)
+
 
 export default router;

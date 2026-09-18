@@ -1,5 +1,6 @@
 import {create} from 'zustand'
 import {axiosInstance} from '../lib/axios'
+import {useChatStore} from './useChatStore'
 import toast from "react-hot-toast"
 
 export const useDocumentStore = create((set) => ({
@@ -17,6 +18,10 @@ export const useDocumentStore = create((set) => ({
 
     closeSidebar: () => set({ isSidebarOpen: false}),
 
+    setSelectedDocument: (document) => {
+        set({ selectedDocument: document });
+    },
+
     uploadDocument: async (file) => {
         set({ isUploading: true });
         try {
@@ -24,7 +29,11 @@ export const useDocumentStore = create((set) => ({
             formData.append('file', file);
 
             const response = await axiosInstance.post('/documents/', formData)
-            set((state) => ({ documents: [...state.documents, response.data.document], selectedDocument: response.data.document }));
+            useChatStore.getState().setConversationId(response.data.conversation._id)
+            set((state) => ({ 
+                documents: [...state.documents, response.data.document], 
+                selectedDocument: response.data.document, 
+            }));
             toast.success("Document uploaded successfully");
         } catch (error) {
             toast.error( error.response?.data?.message || "Failed to upload document")

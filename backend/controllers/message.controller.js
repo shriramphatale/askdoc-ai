@@ -57,7 +57,7 @@ const getMessages = async (req, res) => {
         const conversation = await Conversation.findOne({
             _id: conversationId,
             userId: req.user._id,
-        });
+        }).populate("documentId");
 
         if(!conversation){
             return res.status(404).json({message: "Conversation not found"});
@@ -65,7 +65,7 @@ const getMessages = async (req, res) => {
 
         const messages = await Message.find({ conversationId, }).sort({ createdAt: 1 });
 
-        return res.status(200).json({data: messages});
+        return res.status(200).json({ messages, document: conversation.documentId});
 
     } catch (error){
         console.log("error in getMessages: ",error);

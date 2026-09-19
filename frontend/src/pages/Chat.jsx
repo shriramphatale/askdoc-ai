@@ -9,7 +9,7 @@ import {useDocumentStore} from "../store/useDocumentStore"
 import {useChatStore} from "../store/useChatStore"
 
 const Chat = () => {
-  const { isUserMenuOpen, closeUserMenu } = useUIStore();
+  const { isUserMenuOpen, closeUserMenu, isPdfOpen, closePdf } = useUIStore();
   const {selectedDocument} = useDocumentStore()
   const {getRecentChats} = useChatStore()
 
@@ -31,12 +31,24 @@ const Chat = () => {
         
       </div>
 
-      {selectedDocument && (
-        <div className="hidden lg:block w-[40%] min-w-[350px] max-w-[650px] shrink-0 border-l border-zinc-800/70">
-          <PdfViewer
-            pdfUrl={selectedDocument.fileUrl}
-          />
-        </div>
+      {selectedDocument && isPdfOpen && (
+        <>
+          {/* Mobile + Tablet */}
+          <div className="fixed inset-0 z-30 lg:hidden">
+            <PdfViewer
+              pdfUrl={selectedDocument.fileUrl}
+              closePdf = {closePdf}
+            />
+          </div>
+
+          {/* Desktop */}
+          <div className="hidden lg:block w-[40%] min-w-[350px] max-w-[650px] shrink-0 border-l border-zinc-800/70">
+            <PdfViewer
+              pdfUrl={selectedDocument.fileUrl}
+              closePdf = {closePdf}
+            />
+          </div>
+        </>
       )}
     </div>
   );

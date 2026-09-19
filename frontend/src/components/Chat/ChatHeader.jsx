@@ -1,8 +1,10 @@
 import { FileText, ExternalLink } from "lucide-react";
 import { useDocumentStore } from "../../store/useDocumentStore"
+import { useUIStore } from "../../store/useUIStore"
 
 const ChatHeader = () => {
     const { selectedDocument } = useDocumentStore();
+    const { openPdf, isPdfOpen } = useUIStore()
 
     return (
         <div className="absolute top-3 left-0 right-0 z-20 flex justify-center px-4">
@@ -16,19 +18,13 @@ const ChatHeader = () => {
                 </div>
 
                 {/* Mobile / Tablet */}
-                <button
-                    className="
-                    flex items-center gap-1
-                    rounded-full
-                    bg-white px-2.5 py-1
-                    text-[11px] font-medium
-                    text-black
-                    lg:hidden
-                    "
-                >
-                    <ExternalLink size={12} />
-                    Open PDF
-                </button>
+                { !isPdfOpen && (
+                    <button onClick={ openPdf }
+                        className="flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-black cursor-pointer">
+                        <ExternalLink size={12} />
+                        Open PDF
+                    </button>
+                ) }
             </div>
         </div>
   )

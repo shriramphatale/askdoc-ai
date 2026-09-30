@@ -1,5 +1,9 @@
 import { Conversation } from "../models/conversation.model.js"
 import { Message } from "../models/message.model.js"
+import { Document } from "../models/document.model.js";
+import { generateAnswer } from "../services/gemini.service.js";
+import { retrieveRelevantChunks } from "../services/vector.service.js";
+import { redis } from "../config/redis.js";
 
 const askQuestion = async (req, res) => {
     try {
@@ -14,9 +18,33 @@ const askQuestion = async (req, res) => {
             _id: conversationId,
             userId: req.user._id,
         });
-
+        
         if(!conversation) {
             return res.status(404).json({ message: "Conversation not found" });
+        }
+
+        // get document status
+        let documentStatus = await redis.get(
+            `document:status:${conversation.documentId}`
+        );
+
+        if(!documentStatus){
+            const document = await Document.findOne({
+                _id: conversation.documentId,
+                userId: req.user._id,
+            });
+            
+            if(!document){
+                return res.status(404).json({ message: "Document not found" });
+            }
+
+            documentStatus = document.status;
+
+            // add status to redis
+            await redis.set(`document:status:${document._id}`, document.status, "EX", 3 * 60 * 60);
+        }
+        if(documentStatus !== "ready"){
+            return res.status(400).json({message: "document is still being processed"});
         }
 
         const userMessage = await Message.create({
@@ -25,13 +53,23 @@ const askQuestion = async (req, res) => {
             content: question.trim(),
         });
 
-        //Ai response
-        const aiResponse = "sample ai response";
+        // Retrieve Chunks
+        const relevantChunks = await retrieveRelevantChunks( question, req.user._id, conversation.documentId);
+
+        const context = JSON.stringify(
+            relevantChunks.map(chunk => ({
+                content: chunk.pageContent,
+                page: chunk.metadata.page
+            }))
+        );
+
+        // get Ai response
+        const aiAnswer = await generateAnswer(question, context);
 
         const aiMessage = await Message.create({
             conversationId,
             role: "assistant",
-            content: aiResponse
+            content: aiAnswer.text
         });
 
         const updateData = { lastMessageAt: aiMessage.createdAt };

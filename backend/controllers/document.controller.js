@@ -2,6 +2,7 @@ import { Document } from '../models/document.model.js';
 import { Conversation } from '../models/conversation.model.js'
 import cloudinary from '../config/cloudinary.js';
 import { PDFDocument } from 'pdf-lib';
+import { documentQueue } from '../queues/document.queue.js'
 import fs from "fs";
 
 const uploadDocument = async (req, res) => {
@@ -34,6 +35,23 @@ const uploadDocument = async (req, res) => {
         const savedDocument = await document.save();
 
         const conversation = await Conversation.create({ userId: req.user._id, documentId: document._id })
+
+        await documentQueue.add('process-document', 
+            {
+                documentId: savedDocument._id.toString(),
+                userId: req.user._id.toString(),
+                fileUrl: savedDocument.fileUrl,
+            },
+            {
+                attempts: 3,
+                backoff: {
+                    type: 'exponential',
+                    delay: 5000,
+                },
+                removeOnComplete: 100,
+                removeOnFail: 1000,
+            }
+        );
 
         res.status(201).json({ message: 'Document uploaded successfully', document: savedDocument, conversation });
     } catch (error) {

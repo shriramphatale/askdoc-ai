@@ -9,7 +9,8 @@ export const useChatStore = create((set, get) => ({
     conversationId: null,
     isRecentChatsLoading: false,
     isMessagesLoading: false,
-    isMessageLoading: false,
+    isAiMessageLoading: false,
+    typingMessageId: null,
 
     setConversationId: (conversationId) => {
         set({conversationId});
@@ -36,18 +37,19 @@ export const useChatStore = create((set, get) => ({
             };
             set((state) => ({
                 messages: [...state.messages, userMessage],
-                isMessageLoading: true,
+                isAiMessageLoading: true,
             }))
 
             const response = await axiosInstance.post(`/chats/${conversationId}`, {question: question.trim()});
             
             set((state) => ({
                 messages: [...state.messages, response.data.data],
+                typingMessageId: response.data.data._id,
             }));
         } catch(error) {
             toast.error(error.response?.data?.message || "Failed to send message");
         } finally {
-            set({isMessageLoading: false,});
+            set({isAiMessageLoading: false,});
         };
         
     },

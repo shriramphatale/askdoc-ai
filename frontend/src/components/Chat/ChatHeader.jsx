@@ -14,7 +14,7 @@ const ChatHeader = () => {
                 </div>
 
                 <div className="max-w-[160px] truncate text-xs text-zinc-300">
-                    {selectedDocument?.title || "demo.pdf"}
+                    {selectedDocument?.title?.split("-").splice(1).join("-") || "demo.pdf"} 
                 </div>
 
                 {/* Mobile / Tablet */}

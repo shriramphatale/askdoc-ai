@@ -1,10 +1,27 @@
+import { useEffect, useRef } from "react";
 import {useChatStore} from "../../store/useChatStore"
 import { FileText } from "lucide-react";
+import TypingMessage from './TypingMessage'
+
 const ChatMessages = () => {
-    const { messages } = useChatStore();
+  const { messages, isAiMessageLoading, typingMessageId } = useChatStore();
+
+  const scrollContainerRef = useRef(null);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    requestAnimationFrame(() => {
+      container.scrollTo({
+      top: container.scrollHeight,
+      behavior: "smooth",
+    });
+    });
+  }, [messages, isAiMessageLoading]);
 
   return (
-    <div className="h-full overflow-y-auto px-4 pt-24 pb-28">
+    <div ref={scrollContainerRef} className="h-full overflow-y-auto px-4 pt-24 pb-28 pdf-scrollbar">
         <div className="mx-auto max-w-3xl space-y-6">
           {messages.length === 0 ? (
             <div className="flex min-h-[60vh] items-center justify-center">
@@ -60,11 +77,22 @@ const ChatMessages = () => {
                   ) : (
                   /* Assistant Message */
                   <div className="max-w-[85%] text-sm leading-7 text-zinc-300">
-                    {message.content}
+                    {message._id === typingMessageId ? (
+                      <TypingMessage content={message.content} 
+                        onComplete={() => {useChatStore.setState({ typingMessageId: null });}}/>
+                    ) : (
+                      message.content
+                    )}
                   </div>
                 )}
               </div>
             ))
+          )}
+          {/* AI Loading Skeleton - left side, single line */}
+          {isAiMessageLoading && (
+            <div className="flex justify-start">
+              <div className="h-3 w-48 animate-pulse rounded bg-zinc-800" />
+            </div>
           )}
         </div>
       </div>

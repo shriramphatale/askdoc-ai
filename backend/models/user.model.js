@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
     profilePic: {
         type: String,
         default: '',
+    },
+    plan: {
+        type: String,
+        enum: ["free", "paid"],
+        default: "free"
     }
 }, { timestamps: true });
 

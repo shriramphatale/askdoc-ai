@@ -4,6 +4,8 @@ import { Document } from "../models/document.model.js";
 import { generateAnswer } from "../services/gemini.service.js";
 import { retrieveRelevantChunks } from "../services/vector.service.js";
 import { redis } from "../config/redis.js";
+import { checkQuestionQuota } from '../services/quata.service.js'
+import { incrementQuestionUsage } from "../services/usage.service.js";
 
 const askQuestion = async (req, res) => {
     try {
@@ -12,6 +14,11 @@ const askQuestion = async (req, res) => {
 
         if(!question?.trim()) {
             return res.status(400).json({message: "Question is required"});
+        }
+
+        const quota = await checkQuestionQuota(req.user);
+        if (!quota.allowed) {
+            return res.status(429).json({success: false,message: quota.message,used: quota.used,});
         }
 
         const conversation = await Conversation.findOne({
@@ -79,6 +86,9 @@ const askQuestion = async (req, res) => {
         await Conversation.updateOne({_id: conversationId}, {
             $set: updateData,
         });
+
+        // update incr question in Usage model
+        incrementQuestionUsage(req.user);
 
         return res.status(200).json({ data: aiMessage });
 

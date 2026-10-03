@@ -3,12 +3,20 @@ import { Conversation } from '../models/conversation.model.js'
 import cloudinary from '../config/cloudinary.js';
 import { PDFDocument } from 'pdf-lib';
 import { documentQueue } from '../queues/document.queue.js'
+import { checkPdfUploadQuota } from '../services/quata.service.js'
 import fs from "fs";
+import { incrementPdfUsage } from '../services/usage.service.js';
 
 const uploadDocument = async (req, res) => {
     try {
         if(!req.file) {
             return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        // check pdf upload quota
+        const quota = await checkPdfUploadQuota(req.user)
+        if (!quota.allowed) {
+            return res.status(429).json({ success: false, message: quota.message, });
         }
 
         // Read the uploaded PDF file and get the page count
@@ -52,6 +60,9 @@ const uploadDocument = async (req, res) => {
                 removeOnFail: 1000,
             }
         );
+
+        // increament in upload pdf in usage model
+        await incrementPdfUsage(req.user);
 
         res.status(201).json({ message: 'Document uploaded successfully', document: savedDocument, conversation });
     } catch (error) {

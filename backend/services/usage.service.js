@@ -14,6 +14,13 @@ const incrementQuestionUsage = async (user) => {
         [
             {
                 $set: {
+                    totalQuestions: {
+                        $add: [
+                            { $ifNull: ["$totalQuestions", 0] },
+                            1,
+                        ],
+                    },
+
                     dailyQuestions: {
                         $cond: [
                             { $eq: ["$dailyQuestionDate", today] },

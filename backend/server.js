@@ -6,6 +6,7 @@ import connectDB from "./config/db.js"
 import authRoutes from "./routes/auth.routes.js"
 import documentRoutes from "./routes/document.routes.js"
 import chatRoutes from "./routes/message.routes.js"
+import dashboardRoutes from "./routes/dashboard.routes.js"
 
 const app = express()
 
@@ -27,6 +28,7 @@ app.get('/', (req,res) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/documents', documentRoutes)
 app.use('/api/chats', chatRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 const PORT = ENV.PORT || 5000
 

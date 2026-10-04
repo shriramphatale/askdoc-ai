@@ -23,6 +23,11 @@ const usageSchema = new mongoose.Schema(
             type: String, // YYYY-MM
         },
 
+        totalQuestions: {
+            type: Number,
+            default: 0,
+        },
+
         dailyQuestions: {
             type: Number,
             default: 0,

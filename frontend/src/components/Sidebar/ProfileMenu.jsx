@@ -1,10 +1,13 @@
 import { Sparkles, CircleUserRound, CreditCard, Bell, LogOut, } from "lucide-react";
 import {useAuthStore} from "../../store/useAuthStore"
 import {useUIStore} from "../../store/useUIStore"
+import { useNavigate } from 'react-router'
 
 const ProfileMenu = () => {
     const { authUser, logout } = useAuthStore()
     const { closeUserMenu } = useUIStore()
+
+    const navigate = useNavigate();
 
     const handleLogout = async () => {
         await logout();
@@ -41,7 +44,7 @@ const ProfileMenu = () => {
             Upgrade to Pro
             </button>
 
-            <button onClick={closeUserMenu} className="w-full px-3 py-2 flex items-center gap-3 text-sm text-[#ddd] hover:bg-[#242424]">
+            <button onClick={() => {closeUserMenu(); navigate('/dashboard')}} className="w-full px-3 py-2 flex items-center gap-3 text-sm text-[#ddd] hover:bg-[#242424]">
             <CircleUserRound size={17} />
             Account
             </button>

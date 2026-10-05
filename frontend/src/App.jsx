@@ -7,6 +7,7 @@ import Signup from "./pages/Signup"
 import Login from "./pages/Login"
 import Home from "./pages/Home"
 import Chat from "./pages/Chat"
+import Dashboard from './pages/Dashboard'
 
 const App = () => {
   const {checkAuth, isCheckingAuth, authUser} = useAuthStore()
@@ -44,6 +45,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/chat" element={authUser ? <Chat/> : <Navigate to={"/login"} replace />} />
+        <Route path="/dashboard" element={authUser ? <Dashboard/> : <Navigate to={"/login"} replace />} />
         <Route path="/signup" element={!authUser ? <Signup /> : <Navigate to={"/chat"} replace />} />
         <Route path="/login" element={!authUser ? <Login /> : <Navigate to={"/chat"} replace />} />
       </Routes>

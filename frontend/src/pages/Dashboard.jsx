@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { MoreHorizontal, ArrowLeft } from "lucide-react";
 import { useNavigate } from 'react-router'
+import  { useAuthStore } from "../store/useAuthStore.js"
 import { useDashboardStore } from "../store/useDashboardStore.js"
 
 const Dashboard = () => {
   
+  const { authUser } = useAuthStore()
   const {dashboard, isLoading, fetchDashboard} = useDashboardStore()
 
   useEffect(() => {
@@ -102,7 +104,7 @@ const Dashboard = () => {
                 </span>
 
                 <span className="font-medium text-zinc-100">
-                  {dashboard.questions.limit}/day
+                  {dashboard.questions.limit}/{authUser.plan === "paid" ? "month" : "day"}
                 </span>
             </div>
         </div>

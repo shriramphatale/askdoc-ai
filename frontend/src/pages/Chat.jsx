@@ -7,9 +7,10 @@ import EmptyChat from "../components/Chat/EmptyChat"
 import {useUIStore} from "../store/useUIStore";
 import {useDocumentStore} from "../store/useDocumentStore"
 import {useChatStore} from "../store/useChatStore"
+import SubscriptionModal from "../components/SubscriptionModal";
 
 const Chat = () => {
-  const { isUserMenuOpen, closeUserMenu, isPdfOpen, closePdf } = useUIStore();
+  const { isUserMenuOpen, closeUserMenu, isPdfOpen, closePdf, showPlans } = useUIStore();
   const {selectedDocument} = useDocumentStore()
   const {getRecentChats} = useChatStore()
 
@@ -50,6 +51,8 @@ const Chat = () => {
           </div>
         </>
       )}
+
+      {showPlans && <SubscriptionModal/>}
     </div>
   );
 };

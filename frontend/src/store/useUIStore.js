@@ -4,6 +4,7 @@ const isDesktop = () => window.innerWidth >= 1024;
 export const useUIStore = create((set) => ({
   isUserMenuOpen: false,
   isPdfOpen: isDesktop(),
+  showPlans: false,
 
   openPdf: () => set({ isPdfOpen: true }),
   closePdf: () => set({ isPdfOpen: false }),
@@ -11,6 +12,8 @@ export const useUIStore = create((set) => ({
     isPdfOpen: !state.isPdfOpen,
   })),
 
+  openPlans: () => set({ showPlans: true }),
+  closePlans: () => set({ showPlans: false }),
 
   toggleUserMenu: () =>
     set((state) => ({

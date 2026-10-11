@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.routes.js"
 import documentRoutes from "./routes/document.routes.js"
 import chatRoutes from "./routes/message.routes.js"
 import dashboardRoutes from "./routes/dashboard.routes.js"
+import paymentRoutes from "./routes/payment.routes.js"
 
 const app = express()
 
@@ -29,6 +30,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/documents', documentRoutes)
 app.use('/api/chats', chatRoutes)
 app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/payment', paymentRoutes)
 
 const PORT = ENV.PORT || 5000
 

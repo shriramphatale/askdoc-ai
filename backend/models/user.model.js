@@ -27,7 +27,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         enum: ["free", "paid"],
         default: "free"
-    }
+    },
+    planExpiresAt: {
+        type: Date,
+        default: null,
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);    
